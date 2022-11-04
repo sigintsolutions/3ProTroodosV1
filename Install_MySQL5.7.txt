@@ -1,0 +1,20 @@
+How to Install MySQL 5.7 on Ubuntu 16.04
+
+Step 1 – Configure Apt Repository
+$ wget http://repo.mysql.com/mysql-apt-config_0.8.9-1_all.deb
+$ sudo dpkg -i mysql-apt-config_0.8.9-1_all.deb
+
+Step 2 – Install MySQL Server
+Use the following commands to install MySQL server on your Ubuntu 16.04 and 14.04 systems. Currently, this is the most popular version used by the among users.
+
+$ sudo apt-get update
+$ sudo apt-get install mysql-server
+
+Step 3 – Secure MySQL Installation
+$ mysql_secure_installation
+
+Step 4 – Working with MySQL
+login to MySQL server using the following command. 
+
+Enter the password created during installation. Here you can create database and tables to store data.
+$ mysql -u root -p

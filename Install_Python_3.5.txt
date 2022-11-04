@@ -1,0 +1,19 @@
+Step 1: Update and Upgrade package in Ubuntu
+
+$sudo apt-get update
+$sudo apt-get upgrade
+
+Step 2: Install ssl package
+$sudo apt-get install libssl1.0-dev
+
+Step 3: Download Python 3.5 from the source
+$wget https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz
+$tar -xvzf Python-3.5.6.tgz
+
+Step 4: Install Python-3.5.6
+$cd Python-3.5.6
+$./configure --enable-loadable-sqlite-extensions --enable-optimizations
+$make
+$make test
+$sudo make install
+$sudo ldconfig

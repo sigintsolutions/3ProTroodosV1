@@ -1,0 +1,62 @@
+How to Install Mosquitto MQTT Broker/Server on Ubuntu 16.04
+Prerequisites
+An Ubuntu 16.04 server with root access
+Open port TCP:1883 on firewall
+
+Step One: Install Mosquitto Broker
+Update Ubuntu's package list and install the latest Mosquitto Broker available from it
+
+sudo apt-get update
+sudo apt-get install mosquitto
+The Mosquitto service will start after installation.
+
+Step Two: Install the Clients and Test
+Install MQTT clients
+sudo apt-get install mosquitto-clients
+Mosquitto clients help us easily test MQTT through a command line utility. We will use two command windows, one to subscribe to a topic named "test" and one to publish a message to it.
+
+Topics are labels used by the broker to filter messages for each connected client. A client program subscribed to a topic "Home1/BedroomTemp" will only listen to messages published to the same topic by other clients.
+
+Subscribe to topic "test"
+mosquitto_sub -t "test"
+Mosquito_sub is a subscribe client we installed in the previous command. Here we are specifying "-t" followed by a topic name.
+
+Publish a message to topic "test"
+Login to the terminal as a second instance and publish a message to the "test" topic.
+
+mosquitto_pub -m "message from mosquitto_pub client" -t "test"
+Here the additional parameter "–m" is followed by the message we want to publish. Hit "Enter" and you should see a message from mosquitto_pub client displayed in other terminal where mosquito_sub client is running.
+
+Step Three: Secure with a Password
+Mosquitto comes with a password file generating utility called mosquitto_passwd.
+
+sudo mosquitto_passwd -c /etc/mosquitto/passwd dave
+Password: password
+Create a configuration file for Mosquitto pointing to the password file we have just created.
+
+sudo nano /etc/mosquitto/conf.d/default.conf
+This will open an empty file. Paste the following into it.
+
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+Save and exit the text editor with "Ctrl+O", "Enter" and "Ctrl+X".
+
+Now restart Mosquitto server and test our changes.
+
+sudo systemctl restart mosquitto
+In the subscribe client window, press "Ctrl+C" to exit the subscribe client and restart it with following command.
+
+mosquitto_sub -t "test" -u "dave" -P "password"
+Note the capital -P here.
+
+In the publish client window, try to publish a message without a password.
+
+mosquitto_pub -t "test" -m "message from mosquitto_pub client"
+The message will be rejected with following error message.
+
+Connection Refused: not authorised.
+Error: The connection was refused.
+Now publish a message with the username and password.
+
+mosquitto_pub -t "test" -m "message from mosquitto_pub client" -u "dave" -P "password"
+Hit "Enter" and you will see the message in subscribe client window, as in Step Two.

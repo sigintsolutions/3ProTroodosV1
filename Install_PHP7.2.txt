@@ -1,0 +1,59 @@
+How to Install PHP 7.2 on Ubuntu 16.04
+
+Installing PHP 7.2
+user@test:~# sudo add-apt-repository ppa:ondrej/php
+Press enter when it prompts you to. This allows your system to use the repository as a source for new software. The next command grabs the list of available software packages for your system:
+
+user@test:~# sudo apt-get update
+After that you can proceed with the install:
+
+user@test:~# sudo apt-get install php7.2
+It should show several different packages that it will install and how much total disk space they will use. When it prompts you, type ‘Y’ and submit it. After a few moments the install should be complete, check the PHP version with:
+
+user@test:~# php -v
+ PHP 7.2.13-1+ubuntu16.04.1+deb.sury.org+1
+It should now show PHP 7.2, but now we need to have Apache configured to use the newer version.
+
+Configuring Apache to Use PHP 7.2
+Ubuntu 16.04 uses a few different commands to help manage Apache modules so the way it utilizes a specific PHP version depends on which module is loaded. You can view the list of available modules by running:
+
+user@test:~# ls /etc/apache2/mods-available/php*
+ /etc/apache2/mods-available/php7.0.conf
+ /etc/apache2/mods-available/php7.0.load
+ /etc/apache2/mods-available/php7.2.conf
+ /etc/apache2/mods-available/php7.2.load
+You may have other modules as well, the default LAMP stack install would have 7.0 and the new 7.2 install we just made, but running the next command shows that 7.0 is still active:
+
+user@test:~# ls /etc/apache2/mods-enabled/php*
+/etc/apache2/mods-enabled/php7.0.conf
+/etc/apache2/mods-enabled/php7.0.load
+
+To switch that to the newer 7.2 version, first disable older PHP version:
+
+user@test:~# sudo a2dismod php7.0
+
+Then enable PHP 7.2:
+
+user@test:~# sudo a2enmod php7.2
+
+Before restarting Apache, check the Apache configuration syntax by running:
+
+user@test:~# apachectl -t
+Syntax OK
+
+If it says the syntax is OK, then restart Apache:
+
+user@test:~# sudo service apache2 restart
+
+Verifying Apache’s PHP Version
+Now to check your work, run the previous command again to see which module is loaded and it should show the PHP 7.2 version:
+
+user@test:~# ls /etc/apache2/mods-enabled/php*
+/etc/apache2/mods-enabled/php7.2.conf
+/etc/apache2/mods-enabled/php7.2.load
+
+If you do not see the same results as shown in the last few commands, recheck the spelling and syntax of the last few commands and make sure sudo was entered if you are not running as the root user.
+
+Then to test it on your site, we recommend making a phpinfo file you can view on your domain. This shows the PHP version as well as information about current configurations, variables, and all the added modules. Create a new .php file in your site’s home folder or in Apache’s document root (/var/www/html by default) and include this code:
+
+<?php phpinfo(); ?>
